@@ -1,0 +1,75 @@
+# This workflow will build a package using Maven and then publish it to GitHub packages when a release is created
+# For more information see: https://github.com/actions/setup-java#apache-maven-with-a-settings-path
+
+name: CreateIssue
+
+on:
+   schedule: 
+       - cron: '1 0 1,16 * *'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+       
+    steps:
+    - uses: actions/checkout@v2
+           
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+        
+    - name: Generate github hosts
+      run: |
+        python socket_query.py
+        cat hosts.txt
+ 
+    
+    - name: Close issues of hosts label
+      uses: actions/github-script@0.4.0
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          let response = await github.issues.listForRepo({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            labels: ['host'],
+            state: 'open'
+          });
+          let data = response['data'];
+          
+          data.forEach(function(issue){
+            var id = issue['number'];
+            github.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: id,
+              state: 'closed'
+            });
+          });
+          
+    - name: Create issue to show hosts
+      uses: actions/github-script@0.4.0
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const date = new Date();
+          const year = date.getFullYear().toString();
+          const month = (date.getMonth() + 1).toString();
+          const day = date.getDate().toString();
+          const title = year + '-' + month + '-' + day + ' github hosts';
+          var fs = require("fs");
+          fs.readFile("hosts.txt", 'utf-8', (err, data) => {
+            github.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                labels: ['host'],
+                title: title,
+                body: data
+            });
+          });
+
+    
+
+

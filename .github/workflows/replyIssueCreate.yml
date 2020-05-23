@@ -1,0 +1,53 @@
+
+name: ReplyIssueCreate
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  permission:
+    name: permission check
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-actions[bot]'
+    steps:
+    - name: check permission
+      run: |
+        echo ${{ github.actor }}
+        echo permission pass
+      
+      
+  build:
+    runs-on: ubuntu-latest
+    needs: permission
+    steps:
+    - uses: actions/checkout@v2
+           
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+    
+    - name: Generate github hosts
+      run: |
+        python socket_query.py
+        
+    - uses: actions/github-script@0.4.0
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          var fs = require("fs");
+          fs.readFile("hosts.txt", 'utf-8', (err, data) => {
+            github.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: data
+            });
+          });
+ 
+    
+
+    
+
+
