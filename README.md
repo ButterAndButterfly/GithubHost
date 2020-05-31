@@ -8,9 +8,9 @@
     + 每月1/16号发布issue
 + 支持自动回复  
     + 如果想查询最新的host，可以自己开个issue，自动回复。
-    + 举例[issue #1](https://github.com/nICEnnnnnnnLee/GithubHost/issues/1)
+    + 举例[issue #1](https://github.com/ButterAndButterfly/GithubHost/issues/1)
 
 ## 查看
-+ 请移步[issue](https://github.com/nICEnnnnnnnLee/GithubHost/issues/)页面。   
++ 请移步[issue](https://github.com/ButterAndButterfly/GithubHost/issues/)页面。   
 + 更改hosts后，注意`ipconfig /flushdns`刷新DNS缓存。
 
