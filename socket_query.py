@@ -21,6 +21,7 @@ def output_hosts():
                 'avatars7.githubusercontent.com',
                 'avatars8.githubusercontent.com',
                 'github.githubassets.com',
+                'user-images.githubusercontent.com',
                 'api.github.com']
     
     with open('hosts.txt', 'w') as f:
