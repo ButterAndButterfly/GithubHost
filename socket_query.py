@@ -20,6 +20,7 @@ def output_hosts():
                 'avatars6.githubusercontent.com',
                 'avatars7.githubusercontent.com',
                 'avatars8.githubusercontent.com',
+                'avatars.githubusercontent.com',
                 'github.githubassets.com',
                 'user-images.githubusercontent.com',
                 'codeload.github.com',
