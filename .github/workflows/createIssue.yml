@@ -48,7 +48,39 @@ jobs:
               state: 'closed'
             });
           });
+    
+    - name: Close issues of out-dated host query
+      uses: actions/github-script@0.4.0
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          let response = await github.issues.listForRepo({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            labels: ['host-query'],
+            state: 'open'
+          });
+          let data = response['data'];
           
+          data.forEach(function(issue){
+            var id = issue['number'];
+            var is2Deal = true;
+            var updated_at = new Date(issue['updated_at']);
+            var time_now = new Date();
+            var deta = time_now.getTime() - updated_at.getTime();
+            console.log('deta: ' + deta);
+            if(deta < 1000*60*60*24*14){
+                is2Deal = false;
+            }
+            if(is2Deal){
+                github.issues.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: id,
+                  state: 'closed'
+                });
+            }
+          });    
     - name: Create issue to show hosts
       uses: actions/github-script@0.4.0
       with:
