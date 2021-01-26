@@ -24,7 +24,9 @@ def output_hosts():
                 'github.githubassets.com',
                 'user-images.githubusercontent.com',
                 'codeload.github.com',
-                'api.github.com']
+                'favicons.githubusercontent.com',
+                'api.github.com'
+                ]
     
     with open('hosts.txt', 'w') as f:
         f.write('```\n')
