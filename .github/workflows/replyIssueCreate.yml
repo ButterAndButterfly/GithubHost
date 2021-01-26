@@ -9,7 +9,7 @@ jobs:
   permission:
     name: permission check
     runs-on: ubuntu-latest
-    if: ${{ github.actor != 'github-actions[bot]' && !startsWith(github.event.issue.labels[0].name, '[Issue]') }}
+    if: ${{ github.actor != 'github-actions[bot]' && !startsWith(github.event.issue.title, '[Issue]') }}
     steps:
     - name: check permission
       run: |
