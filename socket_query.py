@@ -26,6 +26,7 @@ def output_hosts():
                 'codeload.github.com',
                 'favicons.githubusercontent.com',
                 'marketplace-screenshots.githubusercontent.com',
+                'repository-images.githubusercontent.com',
                 'api.github.com'
                 ]
     
