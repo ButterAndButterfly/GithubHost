@@ -9,6 +9,12 @@
 + 支持自动回复  
     + 如果想查询最新的host，可以自己开个issue，自动回复。
     + 举例[issue #1](https://github.com/ButterAndButterfly/GithubHost/issues/1)
++ 支持通过http链接获取host文件  
+    + 你可以通过以下的地址获取附件中的host文件
+        + Github源地址:   <https://github.com/ButterAndButterfly/GithubHost/releases/download/v1/host.txt>
+        + Github镜像: <https://hub.fastgit.org/ButterAndButterfly/GithubHost/releases/download/v1/host.txt>
+    + host文件将由Github Actions机器人每天定时刷新，当有issue提交时也会触发构建
+    + ps: 为啥不直接commit到仓库里，因为会更加冗余记录啊
 
 ## 查看
 + 请移步[issue](https://github.com/ButterAndButterfly/GithubHost/issues/)页面。   

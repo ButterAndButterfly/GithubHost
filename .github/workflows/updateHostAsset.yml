@@ -1,0 +1,49 @@
+name: HostUpdate
+
+## 当有提交、有issue创建时触发，或者凌晨1点触发
+## 将最新host提交到release的附件
+on:    
+  push:
+    paths:
+      - "**"
+  schedule: 
+    - cron: '17 0 * * *'
+  issues:
+    types: [opened]
+    
+jobs:
+  permission:
+    name: permission check
+    runs-on: ubuntu-latest
+    if: ${{ github.actor != 'github-actions[bot]' || github.event_name == 'schedule' }}
+    steps:
+    - name: check permission
+      run: |
+        echo ${{ github.actor }}
+        echo ${{ github.event_name }}
+        echo permission pass
+        
+  build:
+
+    runs-on: ubuntu-latest
+   
+    steps:
+    - uses: actions/checkout@v2
+        
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests==2.22.0
+    
+    - name: Run tasks
+      env:
+        MY_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        MY_OWNER: ${{ github.repository_owner }}
+        MY_REPOSITORY: ${{ github.repository }}
+      run: |
+        python github.py
