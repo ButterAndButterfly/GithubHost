@@ -16,7 +16,9 @@ domains = ['github.com',
         'user-images.githubusercontent.com',
         'codeload.github.com',
         'favicons.githubusercontent.com',
-        'api.github.com'
+        'api.github.com',
+        'marketplace-screenshots.githubusercontent.com',
+        'repository-images.githubusercontent.com',
         ]
         
 def gen_host():
