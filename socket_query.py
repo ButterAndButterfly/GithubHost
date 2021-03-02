@@ -3,24 +3,25 @@
  
 import socket, time
 
-domains = ['github.com',
-        'gist.github.com',
-        'assets-cdn.github.com',
-        'raw.githubusercontent.com',
-        'gist.githubusercontent.com',
-        'cloud.githubusercontent.com',
-        'camo.githubusercontent.com',
-        'avatars0.githubusercontent.com',
-        'avatars.githubusercontent.com',
-        'github.githubassets.com',
-        'user-images.githubusercontent.com',
-        'codeload.github.com',
-        'favicons.githubusercontent.com',
-        'api.github.com',
-        'marketplace-screenshots.githubusercontent.com',
-        'repository-images.githubusercontent.com',
-        ]
-        
+domains = [
+    'api.github.com',
+    'assets-cdn.github.com',
+    'avatars.githubusercontent.com',
+    'avatars0.githubusercontent.com',
+    'camo.githubusercontent.com',
+    'cloud.githubusercontent.com',
+    'codeload.github.com',
+    'favicons.githubusercontent.com',
+    'gist.github.com',
+    'gist.githubusercontent.com',
+    'github.com',
+    'github.githubassets.com',
+    'marketplace-screenshots.githubusercontent.com',
+    'raw.githubusercontent.com',
+    'repository-images.githubusercontent.com',
+    'user-images.githubusercontent.com',
+]
+
 def gen_host():
     for domain in domains:
         print('Querying ip for domain %s'%domain)
