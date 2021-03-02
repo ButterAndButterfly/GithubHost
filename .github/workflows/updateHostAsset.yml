@@ -1,13 +1,13 @@
 name: HostUpdate
 
-## 当有提交、有issue创建时触发，或者凌晨1点触发
+## 当有提交、有issue创建时触发，或者凌晨1点左右触发
 ## 将最新host提交到release的附件
 on:    
   push:
     paths:
       - "**"
   schedule: 
-    - cron: '17 0 * * *'
+    - cron: '6 17 * * *'
   issues:
     types: [opened]
     
