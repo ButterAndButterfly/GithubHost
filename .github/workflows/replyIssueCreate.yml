@@ -36,38 +36,44 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          let reg = /\[Host\]\d{4}-\d{2}-\d{2}/
-          if(!reg.test("${{ github.event.issue.title }}")){
-            const d=new Date();
-            const localTime = d.getTime();
-            const localOffset=d.getTimezoneOffset()*60000;   //getTimezoneOffset()返回是以分钟为单位，需要转化成ms
-            const utc = localTime + localOffset;
-            const offset =8; //东8区
-            const beijing= utc + (3600000*offset);
-            const nd = new Date(beijing);
-            let year = "" + nd.getFullYear();
-            let month = nd.getMonth() + 1;
-            month = month>=10? "" + month: "0" + month;
-            let day = nd.getDate();
-            day = day>=10? "" + day: "0" + day;
-            const title = `[Host]${year}-${month}-${day}`;
-            console.log("title is: " + title);
-            github.issues.update({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                title: title,
+            let reg = /\[Host\]\d{4}-\d{2}-\d{2}/
+            if (!reg.test("${{ github.event.issue.title }}")) {
+                const d = new Date();
+                const localTime = d.getTime();
+                const localOffset = d.getTimezoneOffset() * 60000;   //getTimezoneOffset()返回是以分钟为单位，需要转化成ms
+                const utc = localTime + localOffset;
+                const offset = 8; //东8区
+                const beijing = utc + (3600000 * offset);
+                const nd = new Date(beijing);
+                let year = "" + nd.getFullYear();
+                let month = nd.getMonth() + 1;
+                month = month >= 10 ? "" + month : "0" + month;
+                let day = nd.getDate();
+                day = day >= 10 ? "" + day : "0" + day;
+                const title = `[Host]${year}-${month}-${day}`;
+                console.log("title is: " + title);
+                github.issues.update({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: context.issue.number,
+                    title: title,
+                });
+            }
+            let fs = require("fs");
+            fs.readFile("hosts.txt", 'utf-8', (err, data) => {
+                await github.issues.createComment({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: context.issue.number,
+                    body: data
+                });
+                await github.issues.lock({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: context.issue.number,
+                    lock_reason: "off-topic",
+                });
             });
-          }
-          var fs = require("fs");
-          fs.readFile("hosts.txt", 'utf-8', (err, data) => {
-            github.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                body: data
-            });
-          });
  
     
 

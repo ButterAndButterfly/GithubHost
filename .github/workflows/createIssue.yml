@@ -31,76 +31,82 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          let response = await github.issues.listForRepo({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            labels: ['host'],
-            state: 'open'
-          });
-          let data = response['data'];
-          
-          data.forEach(function(issue){
-            var id = issue['number'];
-            github.issues.update({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: id,
-              state: 'closed'
+            let response = await github.issues.listForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                labels: ['host'],
+                state: 'open'
             });
-          });
-    
-    - name: Close issues of out-dated host query
+            let data = response['data'];
+
+            data.forEach(function (issue) {
+                var id = issue['number'];
+                github.issues.update({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: id,
+                    state: 'closed'
+                });
+            });
+    - name: Close and lock issues of out-dated host query
       uses: actions/github-script@0.4.0
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          let response = await github.issues.listForRepo({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            labels: ['host-query'],
-            state: 'open'
-          });
-          let data = response['data'];
-          
-          data.forEach(function(issue){
-            var id = issue['number'];
-            var is2Deal = true;
-            var updated_at = new Date(issue['updated_at']);
-            var time_now = new Date();
-            var deta = time_now.getTime() - updated_at.getTime();
-            console.log('deta: ' + deta);
-            if(deta < 1000*60*60*24*14){
-                is2Deal = false;
-            }
-            if(is2Deal){
-                github.issues.update({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: id,
-                  state: 'closed'
-                });
-            }
-          });    
+            let response = await github.issues.listForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                labels: ['host-query'],
+                state: 'open'
+            });
+            let data = response['data'];
+
+            data.forEach(function (issue) {
+                let id = issue['number'];
+                let is2Deal = true;
+                let updated_at = new Date(issue['updated_at']);
+                let time_now = new Date();
+                let deta = time_now.getTime() - updated_at.getTime();
+                console.log('deta: ' + deta);
+                if (deta < 1000 * 60 * 60 * 24 * 5) {
+                    is2Deal = false;
+                }
+                if (is2Deal) {
+                    await github.issues.update({
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        issue_number: id,
+                        state: 'closed'
+                    });
+                }
+            });
     - name: Create issue to show hosts
       uses: actions/github-script@0.4.0
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          const date = new Date();
-          const year = date.getFullYear().toString();
-          const month = (date.getMonth() + 1).toString();
-          const day = date.getDate().toString();
-          const title = year + '-' + month + '-' + day + ' github hosts';
-          var fs = require("fs");
-          fs.readFile("hosts.txt", 'utf-8', (err, data) => {
-            github.issues.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                labels: ['host'],
-                title: title,
-                body: data
+            const date = new Date();
+            const year = date.getFullYear().toString();
+            const month = (date.getMonth() + 1).toString();
+            const day = date.getDate().toString();
+            const title = year + '-' + month + '-' + day + ' github hosts';
+            var fs = require("fs");
+            fs.readFile("hosts.txt", 'utf-8', (err, data) => {
+                github.issues.create({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    labels: ['host'],
+                    title: title,
+                    body: data
+                }).then((res) =>{
+                    github.issues.lock({
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        issue_number: res.data.number,
+                        lock_reason: "off-topic",
+                    });
+                });
             });
-          });
 
     
 
