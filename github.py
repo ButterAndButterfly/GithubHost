@@ -2,7 +2,7 @@
 # coding:utf-8
 import os
 import requests,json
-import time
+from datetime import datetime, timedelta, timezone
 import socket_query
 
 class GithubHelper:
@@ -67,9 +67,9 @@ class GithubHelper:
         
         
 def get_now_date_str(format_string="%Y-%m-%d %H:%M:%S"):#"%Y-%m-%d %H:%M:%S"
-    time_stamp = int(time.time())
-    time_array = time.localtime(time_stamp)
-    str_date = time.strftime(format_string, time_array)
+    utc_dt = datetime.utcnow().replace(tzinfo=timezone.utc)
+    bj_dt = utc_dt.astimezone(timezone(timedelta(hours=8)))
+    str_date = bj_dt.strftime(format_string)
     return str_date
     
 def load_from_env():
@@ -98,7 +98,7 @@ if __name__ == "__main__":
     lines = []
     lines.append('# GitHub Start')
     lines.append('# from https://github.com/ButterAndButterfly/GithubHost')
-    lines.append('# Last update at %s (Machine Local Time)'%date_now)
+    lines.append('# Last update at %s (Beijing Time)'%date_now)
     for ip, domain in socket_query.gen_host():
         lines.append("%s %s"%(ip, domain))
     lines.append('# GitHub End')
@@ -114,7 +114,7 @@ if __name__ == "__main__":
 + 你可以通过以下的地址获取附件中的host文件
     + Github源地址:   <https://github.com/ButterAndButterfly/GithubHost/releases/download/v1/host.txt>
     + Github镜像: <https://hub.fastgit.org/ButterAndButterfly/GithubHost/releases/download/v1/host.txt>
-+ host文件将由机器人每天定时刷新，最后更新于(机器所在地区时间)：
++ host文件将由机器人每天定时刷新，最后更新于(北京时间)：
         """
         body += date_now
         body = body.strip()

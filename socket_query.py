@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # coding:utf-8
  
-import socket, time
-
+import socket
+from datetime import datetime, timedelta, timezone
 domains = [
     'api.github.com',
     'assets-cdn.github.com',
@@ -32,16 +32,16 @@ def gen_host():
         yield (ip, domain)
         
 def get_now_date_str(format_string="%Y-%m-%d %H:%M:%S"):#"%Y-%m-%d %H:%M:%S"
-    time_stamp = int(time.time())
-    time_array = time.localtime(time_stamp)
-    str_date = time.strftime(format_string, time_array)
+    utc_dt = datetime.utcnow().replace(tzinfo=timezone.utc)
+    bj_dt = utc_dt.astimezone(timezone(timedelta(hours=8)))
+    str_date = bj_dt.strftime(format_string)
     return str_date
 
 def output_hosts():
     with open('hosts.txt', 'w') as f:
         f.write('```\n')
         f.write('# GitHub Start \n')
-        f.write('# Last update at %s (Machine Local Time)\n'%(get_now_date_str()))
+        f.write('# Last update at %s (Beijing Time)\n'%(get_now_date_str()))
         for ip, domain in gen_host():
             f.write('%s %s\n'%(ip, domain))
         f.write('# GitHub End \n')
