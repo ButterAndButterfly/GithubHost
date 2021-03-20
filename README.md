@@ -18,8 +18,11 @@
         + Github源地址:   <https://github.com/ButterAndButterfly/GithubHost/releases/download/v1/host.txt>
         + Github镜像: <https://hub.fastgit.org/ButterAndButterfly/GithubHost/releases/download/v1/host.txt>
     + host文件将由Github Actions机器人每天定时刷新，当有issue提交时也会触发构建
-    + ps: 为啥不直接commit到仓库里，因为会更加冗余记录啊
-
++ 支持通过外链触发host发布(测试功能，随时可能撤销)
+    + 免去登录建issue的烦恼  
+    + 频率最多1次/小时, 请勿滥用  
+    + [点一下这里](https://github-helper.vercel.app/host), 然后issue区、release区均会更新
+    
 ## 查看
 + 请移步[issue](https://github.com/ButterAndButterfly/GithubHost/issues/)页面。   
 + 更改hosts后，注意`ipconfig /flushdns`刷新DNS缓存。
