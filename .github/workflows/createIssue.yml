@@ -6,7 +6,8 @@ name: CreateIssue
 on:
    schedule: 
        - cron: '1 0 1,16 * *'
-
+   label:
+       types: [edited]
 jobs:
   build:
 
@@ -26,10 +27,12 @@ jobs:
         cat hosts.txt
  
     
-    - name: Close issues of hosts label
+    - name: Close issues of hosts label, return 'invalid' if latest action runs within an hour
       uses: actions/github-script@0.4.0
+      id: check
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
+        result-encoding: string
         script: |
             let response = await github.issues.listForRepo({
                 owner: context.repo.owner,
@@ -41,6 +44,13 @@ jobs:
 
             data.forEach(function (issue) {
                 var id = issue['number'];
+                let updated_at = new Date(issue['updated_at']);
+                let time_now = new Date();
+                let deta = time_now.getTime() - updated_at.getTime();
+                console.log('deta: ' + deta);
+                if (deta < 1000 * 60 * 60) {
+                    return 'invalid';
+                }
                 github.issues.update({
                     owner: context.repo.owner,
                     repo: context.repo.repo,
@@ -48,8 +58,10 @@ jobs:
                     state: 'closed'
                 });
             });
-    - name: Close and lock issues of out-dated host query
+            return 'valid';
+    - name: Close issues of out-dated host query
       uses: actions/github-script@0.4.0
+      if: ${{ steps.check.outputs.result == 'valid'}}
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
@@ -72,7 +84,7 @@ jobs:
                     is2Deal = false;
                 }
                 if (is2Deal) {
-                    await github.issues.update({
+                    github.issues.update({
                         owner: context.repo.owner,
                         repo: context.repo.repo,
                         issue_number: id,
@@ -80,8 +92,9 @@ jobs:
                     });
                 }
             });
-    - name: Create issue to show hosts
+    - name: Create and lock issue to show hosts
       uses: actions/github-script@0.4.0
+      if: ${{ steps.check.outputs.result == 'valid'}}
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
