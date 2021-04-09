@@ -42,23 +42,27 @@ jobs:
             });
             let data = response['data'];
 
-            data.forEach(function (issue) {
-                var id = issue['number'];
-                let updated_at = new Date(issue['updated_at']);
-                let time_now = new Date();
-                let deta = time_now.getTime() - updated_at.getTime();
-                console.log('deta: ' + deta);
-                if (deta < 1000 * 60 * 60) {
-                    return 'invalid';
-                }
-                github.issues.update({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    issue_number: id,
-                    state: 'closed'
+            try {
+                data.forEach(function (issue) {
+                    let id = issue['number'];
+                    let updated_at = new Date(issue['updated_at']);
+                    let time_now = new Date();
+                    let deta = time_now.getTime() - updated_at.getTime();
+                    console.log('deta: ' + deta);
+                    if (deta < 1000 * 60 * 60) {
+                        throw new Error("latest action runs within an hour");
+                    }
+                    github.issues.update({
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        issue_number: id,
+                        state: 'closed'
+                    });
                 });
-            });
-            return 'valid';
+                return 'valid';
+            } catch (e) {
+                return 'invalid';
+            }
     - name: Close issues of out-dated host query
       uses: actions/github-script@0.4.0
       if: ${{ steps.check.outputs.result == 'valid'}}
@@ -69,7 +73,9 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 labels: ['host-query'],
-                state: 'open'
+                state: 'open',
+                sort: 'updated',
+                direction: 'asc'
             });
             let data = response['data'];
 
