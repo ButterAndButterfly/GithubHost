@@ -3,6 +3,10 @@
  
 import socket
 from datetime import datetime, timedelta, timezone
+from rich import print
+from rich.console import Console
+
+console = Console()
 domains = [
     'github.com',
     'githubapp.com',
@@ -67,7 +71,8 @@ def get_ip_list(domain): # 获取域名解析出的IP列表
 
 def gen_host():
     for domain in domains:
-        print('Querying ip for domain %s'%domain)
+        console.print('Querying ip for domain ',style="#66CCFF",end="")
+        console.print(domain,style="#ff6800")
         list = get_ip_list(domain)
         for ip in list:
             yield (ip, domain)
@@ -85,7 +90,7 @@ def output_hosts():
         f.write('# GitHub Start \n')
         f.write('# Last update at %s (Beijing Time)\n'%(get_now_date_str()))
         for ip, domain in gen_host():
-            print('ip %s'%ip)
+            console.print('ip %s'%ip)
             f.write('%s %s\n'%(ip, domain))
         f.write('# GitHub End \n')
         f.write('```\n')
