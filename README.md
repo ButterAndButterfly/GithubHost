@@ -16,7 +16,7 @@
 + 支持通过http链接获取host文件  
     + 你可以通过以下的地址获取附件中的host文件
         + Github源地址:   <https://github.com/ButterAndButterfly/GithubHost/releases/download/v1/host.txt>
-        + Github镜像: <https://hub.fastgit.org/ButterAndButterfly/GithubHost/releases/download/v1/host.txt>
+        + Github镜像: <https://hub.fastgit.xyz/ButterAndButterfly/GithubHost/releases/download/v1/host.txt>
     + host文件将由Github Actions机器人每天定时刷新，当有issue提交时也会触发构建
 + 支持通过外链触发host发布(测试功能，随时可能撤销)
     + 免去登录建issue的烦恼  
