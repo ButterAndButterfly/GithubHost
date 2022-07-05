@@ -65,6 +65,33 @@ class GithubHelper:
         # 上传新的附件
         return self.uploadReleaseAsset(release_id, name, data)
         
+    def shaGithubFile(path):
+        url = 'https://api.github.com/repos/%s/%s/contents/%s'%(self.owner, self.repo, path)
+        headers = {'Accept': 'application/vnd.github.v3.star+json', "Authorization": "token "+ self.auth}
+        res = requests.get(url, headers=headers).json()
+        return res["sha"] if "sha" in res else None
+        
+    def downloadGithubFile(path):
+        url = 'https://raw.githubusercontent.com/%s/%s/master/%s'%(self.owner, self.repo, path)
+        headers = {'User-Agent': 'None', 'Accept': 'application/vnd.github.v3.star+json', "Authorization": "token "+ self.auth}
+        res = requests.get(url, headers=headers)
+        return res.content
+        
+    def uploadGithubFile(data:bytes, path):
+        sha = shaGithubFile(path, token)
+        print(sha)
+        url = 'https://api.github.com/repos/%s/%s/contents/%s'%(self.owner, self.repo, path)
+        headers = {'User-Agent': 'None', 'Accept': 'application/vnd.github.v3.star+json', "Authorization": "token "+ token}
+        def gen():
+            yield (r'{"message":"Updated at %d.",'%int(time.time()*1000)).encode("utf-8")
+            if sha:
+                yield (r'"sha":"%s",'%sha).encode("utf-8")
+            yield r'"content":"'.encode("utf-8")
+            yield base64.b64encode(data)
+            yield r'"}'.encode("utf-8")
+        res = requests.put(url, data = gen(), headers=headers)
+        print(res.text)
+        return res
         
 def get_now_date_str(format_string="%Y-%m-%d %H:%M:%S"):#"%Y-%m-%d %H:%M:%S"
     utc_dt = datetime.utcnow().replace(tzinfo=timezone.utc)
