@@ -1,5 +1,5 @@
 # This workflow will build a package using Maven and then publish it to GitHub packages when a release is created
-# For more information see: https://github.com/actions/setup-java#apache-maven-with-a-settings-path
+# For more information see: https://o00o.us.to/actions/setup-java#apache-maven-with-a-settings-path
 
 name: CreateIssue
 
@@ -14,12 +14,12 @@ jobs:
     runs-on: ubuntu-latest
        
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
            
-    - name: Set up Python 3.8
-      uses: actions/setup-python@v1
+    - name: Set up Python 3.13
+      uses: actions/setup-python@v5
       with:
-        python-version: 3.8
+        python-version: 3.13
         
     - name: Generate github hosts
       run: |
