@@ -5,7 +5,6 @@ import socket
 from datetime import datetime, timedelta, timezone
 domains = [
     'api.github.com',
-    'assets-cdn.github.com',
     'avatars.githubusercontent.com',
     'avatars0.githubusercontent.com',
     'camo.githubusercontent.com',
